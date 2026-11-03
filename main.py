@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, Response, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import httpx
 
@@ -25,7 +25,7 @@ async def proxy_to_local(request: Request, path_name: str):
     client_body = await request.body()
     client_headers = dict(request.headers)
     
-    # Remove host header to prevent proxy conflicts
+    # Remove host header to prevent routing conflicts
     client_headers.pop("host", None)
 
     async with httpx.AsyncClient(verify=False, timeout=30.0) as client:
