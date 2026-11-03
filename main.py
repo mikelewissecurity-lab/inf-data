@@ -25,9 +25,10 @@ async def proxy_to_local(request: Request, path_name: str):
     client_body = await request.body()
     client_headers = dict(request.headers)
     
-    # Remove host header to prevent routing conflicts
+    # Remove host header to prevent proxy conflicts
     client_headers.pop("host", None)
 
+    # Disable SSL verification if using a self-signed or Tailscale cert internally
     async with httpx.AsyncClient(verify=False, timeout=30.0) as client:
         try:
             response = await client.request(
