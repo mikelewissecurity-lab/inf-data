@@ -12,7 +12,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Your local node's Tailscale HTTPS URL
 TAILSCALE_TARGET = "https://laptop-setup.taild88315.ts.net"
 
 @app.get("/")
@@ -24,11 +23,8 @@ async def proxy_to_local(request: Request, path_name: str):
     url = f"{TAILSCALE_TARGET}/{path_name}"
     client_body = await request.body()
     client_headers = dict(request.headers)
-    
-    # Remove host header to prevent proxy conflicts
     client_headers.pop("host", None)
 
-    # Disable SSL verification if using a self-signed or Tailscale cert internally
     async with httpx.AsyncClient(verify=False, timeout=30.0) as client:
         try:
             response = await client.request(
